@@ -1,0 +1,278 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node{
+    int data;
+    int colour;
+    struct node *parent;
+    struct node *left;
+    struct node *right;
+};
+struct node *p=NULL,*par=NULL;
+struct node *root;
+char flag='h';
+struct node *nullnode ;
+
+struct node *create_node(int val);  //prvoid  left_rotate(struct nvoid  right_rotate(struct node *x);
+struct node *find_uncle(struct node *p);
+void insert(int val);
+void traverse(struct node *head);
+void balance(struct node *p);
+
+struct node *create_node(int val){   ///function to allocate new node
+    struct node *ptr;
+    
+     ptr=(struct node *)malloc(sizeof(struct node));
+     ptr->data=val;
+    ptr->left=nullnode;
+    ptr->right=nullnode;
+   
+    return ptr;
+}
+
+
+void left_rotate(struct node *x){
+    struct node *temp=x,*y;
+     y=x->right;      //////ERRRORRRR 2
+    x->right=y->left;
+    if(y->left!=nullnode)
+    y->left->parent=x;
+    
+    if(x->parent==nullnode){
+        if(y!=nullnode)
+        y->parent==nullnode;
+        nullnode->left=y;
+        nullnode->right=y;
+    }
+    else if(x==x->parent->left){
+        
+        x->parent->left=y;
+        if(y!=nullnode)
+        y->parent=x->parent;
+    }
+    else{
+         x->parent->right=y;
+        if(y!=nullnode)
+        y->parent=x->parent;
+    }
+    x->right=y->left;
+    y->left=x;  ///left rotation done
+    x->parent=y;
+   
+}
+
+
+void right_rotate(struct node *x){
+    struct node *temp1=x,*y;
+    y=x->left;
+    if(y->right!=nullnode)
+    y->right->parent=x;
+    
+    if(x->parent==nullnode){ //if rotation is about root of tree
+        if(y!=nullnode)
+        y->parent==nullnode;
+        nullnode->left=y;
+        nullnode->right=y;
+    }
+    else if(x==x->parent->left){
+        
+        x->parent->left=y;
+        if(y!=nullnode)
+        y->parent=x->parent;
+    }
+    else{
+         x->parent->right=y;
+        if(y!=nullnode)
+        y->parent=x->parent;
+    }
+    x->left=y->right;
+    x->parent=y;
+    y->right=x;  ///right rotation done
+   
+}
+
+
+struct node *find_uncle(struct node *p){
+   
+    if(p->parent->parent==nullnode) 
+       return NULL;
+    
+    if(p->parent==(p->parent->parent)->left)//if parent(p) is left of grandpa(p)
+       return (p->parent->parent->right);
+    
+    return (p->parent->parent->left);   
+}
+
+void insert(int val){
+       if(root==nullnode)
+       {
+           root=create_node(val);
+           root->left=nullnode;
+           root->right==nullnode;
+           root->colour=0;
+           p=root;
+           return ;
+       }
+    struct node *temp=root,*y;
+    while(temp!=nullnode){
+        y=temp;
+        if(temp->data<val)
+            temp=temp->right;
+        else
+            temp=temp->left;
+    }
+    temp=create_node(val);
+    if(val>y->data)
+    {
+        y->right=temp;
+    }
+    else{
+        y->left=temp;
+    }
+    temp->parent=y;
+    temp->left=nullnode;
+    temp->right=nullnode;
+    temp->colour=1;
+    p=temp;
+
+}
+
+void balance(struct node *p){
+    struct node *temp1=root;
+    struct node *uncle,*temp3;
+    struct node *temp4,*temp5;
+    struct node *temp6;
+   
+    while(p->parent->colour==1){
+        //printf("i am here\n");
+      // uncle=find_uncle(p);
+         
+            if(uncle==NULL){
+                p->colour=1;
+                break;
+            }
+        else{
+        if(uncle->colour==1){
+            p->parent->colour=0;  //0 for black
+            uncle->colour=0;
+            p->parent->parent->colour=1;
+            p=p->parent->parent;
+            continue;
+        }
+        else{
+            
+             if(p->parent==p->parent->parent->left) {  ///implies that parent(p) is left child of grandpa(p)
+              
+            if(p==((p->parent)->right)){//left rotate about parent(p)
+               
+                    temp3=p->parent;
+                     left_rotate(temp3);
+                    p=temp3;
+               
+                temp4=p->parent->parent;
+                 right_rotate(temp4);
+
+            
+                temp4->colour=1;
+                temp4->parent->colour=0;
+                break;
+                
+            }
+                 else{
+                        
+                
+                //right rotate about parent(p)
+                
+                    temp4=p->parent->parent;
+                    right_rotate(temp4);
+                    if(temp4->parent==nullnode){
+                    
+                        root=temp4->parent;
+                    (root)->colour=0;
+                    }
+                 break;
+                    
+                 }
+            }
+            else{
+                if(p==((p->parent)->left)){//left rotate about parent(p)
+               
+                    temp3=p->parent;
+                     right_rotate(temp3);
+                    p=temp3;
+                   
+                 temp4=p->parent->parent;
+                 left_rotate(temp4);
+
+            
+                temp4->colour=1;
+                temp4->parent->colour=0;
+                    break;
+                
+            }
+                else{
+                    //left rotate about parent(p)
+                
+                    temp4=p->parent->parent;
+                    left_rotate(temp4);
+                    if(temp4->parent==nullnode){
+                    
+                        root=temp4->parent;
+                    (root)->colour=0;
+                    }
+                
+                }
+                
+            }
+        }
+        
+    }
+}
+     if(p==(root))
+     {
+        p->colour=0;  //if we reached root node colour it black
+     root=p;
+     }
+        
+
+}
+int main() {
+    nullnode=(struct node *)malloc(sizeof(struct node));
+    nullnode->data=-1;
+    nullnode->colour=0;
+     
+    int x;
+    
+    root=nullnode;
+    
+    nullnode->left=root;
+    nullnode->right=root;  // I am making nullnode as parent of head node of RBT
+    root->parent=nullnode;
+    int n;
+    scanf("%d\n",&n);
+    for(int i=0;i<3;i++){
+    
+        scanf("%d",&x);
+        insert(x);
+        nullnode->left=root;
+        nullnode->right=root;  // I am making nullnode as parent of head node of RBT
+        root->parent=nullnode;
+        balance(p);
+    }
+    
+    
+   
+  printf("%d\n\n",root->data);
+  traverse(root);
+    
+}
+
+
+void traverse(struct node *head){
+    if(head==nullnode)
+    return ;
+    traverse(head->left);
+    printf("%d %d\n",head->data,head->colour);
+    
+    traverse(head->right);
+}
